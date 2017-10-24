@@ -1,0 +1,102 @@
+hash: bada38117d5775b2e71117efd693121c84f438f2ed4a9424bb4bd4a27e62dcab
+updated: 2017-10-13T00:21:08.972365988+02:00
+imports:
+- name: github.com/benmanns/goworker
+  version: 5e68afbc332d07212690694ade6b72167f1be1df
+- name: github.com/cihub/seelog
+  version: f561c5e57575bb1e0a2167028b7339b3a8d16fb4
+  subpackages:
+  - archive
+  - archive/gzip
+  - archive/tar
+  - archive/zip
+- name: github.com/dchest/uniuri
+  version: 8902c56451e9b58ff940bbe5fec35d5f9c04584a
+- name: github.com/garyburd/redigo
+  version: 34a326de1fea52965fa5ad664d3fc7163dd4b0a1
+  subpackages:
+  - internal
+  - redis
+- name: github.com/go-ini/ini
+  version: c787282c39ac1fc618827141a1f762240def08a3
+- name: github.com/go-redis/redis
+  version: 35248155a505a84811be81a2aab1c423317447be
+  subpackages:
+  - internal
+  - internal/consistenthash
+  - internal/hashtag
+  - internal/pool
+  - internal/proto
+- name: github.com/gorilla/websocket
+  version: ea4d1f681babbce9545c9c5f3d5194a789c89f5b
+- name: github.com/mafredri/cdp
+  version: c250768a3c0ae03e6c2a71313678308eeecc283c
+  subpackages:
+  - devtool
+  - protocol
+  - protocol/accessibility
+  - protocol/animation
+  - protocol/applicationcache
+  - protocol/audits
+  - protocol/browser
+  - protocol/cachestorage
+  - protocol/console
+  - protocol/css
+  - protocol/database
+  - protocol/debugger
+  - protocol/deviceorientation
+  - protocol/dom
+  - protocol/domdebugger
+  - protocol/domsnapshot
+  - protocol/domstorage
+  - protocol/emulation
+  - protocol/heapprofiler
+  - protocol/indexeddb
+  - protocol/input
+  - protocol/inspector
+  - protocol/internal
+  - protocol/io
+  - protocol/layertree
+  - protocol/log
+  - protocol/memory
+  - protocol/network
+  - protocol/overlay
+  - protocol/page
+  - protocol/performance
+  - protocol/profiler
+  - protocol/runtime
+  - protocol/schema
+  - protocol/security
+  - protocol/serviceworker
+  - protocol/storage
+  - protocol/systeminfo
+  - protocol/target
+  - protocol/tethering
+  - protocol/tracing
+  - rpcc
+- name: github.com/minio/go-homedir
+  version: 21304a94172ae3a09dee2cd86a12fb6f842138c7
+- name: github.com/minio/minio-go
+  version: d8b91b954e1eb57dbe56df06e6f71834b18b549f
+  subpackages:
+  - pkg/credentials
+  - pkg/encrypt
+  - pkg/policy
+  - pkg/s3signer
+  - pkg/s3utils
+  - pkg/set
+- name: github.com/nfnt/resize
+  version: 891127d8d1b52734debe1b3c3d7e747502b6c366
+- name: github.com/pkg/errors
+  version: 645ef00459ed84a119197bfb8d8205042c6df63d
+- name: github.com/youtube/vitess
+  version: e92ab80470891ef761ead5418bc0bf1f8feb83c2
+  subpackages:
+  - go/cache
+  - go/pools
+  - go/sync2
+- name: golang.org/x/net
+  version: 5602c733f70afc6dcec6766be0d5034d4c4f14de
+  subpackages:
+  - context
+testImports: []

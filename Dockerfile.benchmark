@@ -1,0 +1,8 @@
+FROM golang:1.9.1
+WORKDIR ~/go/src/github.com/reinho/cdp-screenshots
+COPY . ./
+RUN cd benchmark && CGO_ENABLED=0 GOOS=linux go build -v
+
+FROM alpine:3.6
+COPY --from=0 ~/go/src/github.com/reinho/cdp-screenshots/benchmark/benchmark /usr/bin
+ENTRYPOINT ["benchmark"]

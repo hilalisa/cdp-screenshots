@@ -1,0 +1,20 @@
+package: github.com/reinho/cdp-screenshots
+import:
+- package: github.com/benmanns/goworker
+  version: 5e68afbc332d07212690694ade6b72167f1be1df
+- package: github.com/dchest/uniuri
+- package: github.com/mafredri/cdp
+  version: ^0.13.3
+  subpackages:
+  - devtool
+  - protocol/dom
+  - protocol/emulation
+  - protocol/page
+  - rpcc
+- package: github.com/nfnt/resize
+- package: github.com/pkg/errors
+  version: ^0.8.0
+- package: github.com/minio/minio-go
+  version: d8b91b954e1eb57dbe56df06e6f71834b18b549f
+- package: github.com/go-redis/redis
+  version: ^6.7.2

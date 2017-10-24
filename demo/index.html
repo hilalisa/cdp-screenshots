@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Chrome Screenshot Cluster Demo</title>
+
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<script src="https://unpkg.com/vue"></script>
+	<script src="https://unpkg.com/unfetch/dist/unfetch.umd.js"></script>
+
+	<style type="text/css">
+		#radios {
+			margin-bottom: 10px;
+		}
+
+		#resolution input {
+			float: left;
+			width: 45%;
+		}
+
+		#resolution span {
+			float: left;
+			display: block;
+			width: 10%;
+			text-align: center;
+			height: 34px;
+			line-height: 34px;
+		}
+
+		#resolution::after {
+			content: ' ';
+			clear: both;
+			display: block;
+		}
+
+		#result {
+			margin-bottom: 50px;
+		}
+
+		#result img {
+			max-width: 100%;
+		}
+	</style>
+</head>
+<body>
+	<div class="container" id="app">
+		<h1>Chrome Screenshot Cluster Demo</h1>
+
+		<div>
+			<strong>Target type</strong>
+		</div>
+
+		<div id="radios">
+			<label class="radio-inline">
+				<input type="radio" v-model="target_type" value="html"> HTML input
+			</label>
+			<label class="radio-inline">
+				<input type="radio" v-model="target_type" value="url"> Load URL
+			</label>
+		</div>
+
+		<div v-if="target_type == 'html'" class="form-group">
+			<label for="html">HTML to render</label>
+			<textarea class="form-control" id="html" v-model="html" rows="3"></textarea>
+		</div>
+
+		<div v-if="target_type == 'url'" class="form-group">
+			<label for="url">URL to load</label>
+			<input type="text" class="form-control" id="url" placeholder="https://google.com" v-model="url">
+		</div>
+
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label for="resolution_width">Resolution</label>
+
+					<div id="resolution">
+						<input type="number" class="form-control" v-model="width">
+						<span>x</span>
+						<input type="number" class="form-control" v-model="height">
+					</div>
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label for="cropping">Cropping</label>
+					<select class="form-control" id="cropping" v-model="cropping">
+						<option value="false">Screen size</option>
+						<option value="true">Full size (extend height)</option>
+					</select>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label for="scale">Scale</label>
+
+					<input type="number" step="0.01" class="form-control" v-model="scale">
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label for="delay">Delay (in ms)</label>
+
+					<input type="number" class="form-control" v-model="delay">
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label for="format">Format</label>
+
+					<select class="form-control" id="format" v-model="format">
+						<option value="png">PNG</option>
+						<option value="jpeg">JPEG</option>
+					</select>
+				</div>
+
+				<div class="form-group" v-if="format == 'jpeg'">
+					<label for="quality">Quality (in %)</label>
+
+					<input type="number" class="form-control" v-model="quality">
+				</div>
+			</div>
+			<div class="col-sm-6">
+				<div class="form-group">
+					<label for="delay">Target</label>
+
+					<select class="form-control" id="target" v-model="target">
+						<option value="load">Load in browser</option>
+						<option value="s3">Save to S3</option>
+					</select>
+				</div>
+			</div>
+		</div>
+
+		<button type="button" class="btn btn-primary" v-on:click="takeScreenshot()">
+			Take a screenshot
+		</button>
+
+		<hr>
+
+		<div v-if="result" id="result">
+			<h4>Result ({{result.status}}):</h4>
+			<img v-bind:src="result.url">
+		</div>
+	</div>
+
+	<script>
+	new Vue({
+		el: '#app',
+		data: {
+			target_type: 'url',
+			html: '',
+			url: '',
+			width: 1920,
+			height: 1080,
+			cropping: false,
+			scale: 1.00,
+			delay: 0,
+			format: 'png',
+			quality: 100,
+			target: 'load',
+			result: false
+		},
+		methods: {
+			takeScreenshot: function() {
+				var payload = {
+					width: parseInt(this.width),
+					height: parseInt(this.height),
+					scaling: parseFloat(this.scaling),
+					delay: parseInt(this.delay),
+					full_page: !!this.cropping,
+					format: this.format,
+					quality: parseInt(this.quality),
+				}
+
+				console.log(payload.full_page);
+
+				if (this.target_type == "url") {
+					payload.url = this.url
+				} else if (this.target_type == "html") {
+					payload.html = this.html
+				}
+
+				if (this.target == "load") {
+					payload.callback_type = "blob"
+				} else if (this.target == "s3") {
+					payload.callback_type = "s3"
+				}
+
+				console.log(JSON.stringify(payload))
+
+				unfetch('/screenshot', {
+					method: "POST",
+					body: JSON.stringify(payload)
+				}).then((result) => {
+					var finalURL;
+					var contentType = result.headers.get("Content-Type");
+
+					if (contentType != "text/plain") {
+						result.blob().then((blob) => {
+							var reader = new FileReader()
+							reader.readAsDataURL(blob)
+							reader.onloadend = () => {
+								this.result = {
+									status: result.status,
+									url: reader.result
+								}
+							}
+						})
+					} else {
+						result.text().then((text) => {
+							this.result = {
+								status: result.status,
+								url: text
+							}
+						})
+					}
+				})
+			}
+		}
+	})
+	</script>
+</body>
+</html>
